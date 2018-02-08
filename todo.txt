@@ -1,0 +1,42 @@
+
+Spatial Arrangement Method (SpAM) programming project
+
+ 
+
+Participant workflow:
+
+    Input participant ID number
+    Read instructions, proceed on command (e.g., spacebar, click)
+    Drag and drop stimuli (words or images) so arranged by similarity
+        Able to multi-select or lasso several stimuli and move together
+    Indicate when arrangement is finished (e.g., right click)
+    Goodbye screen
+
+Data to output:
+
+    Pairwise (Euclidean) distances between all stimuli (stimA, stim B, distance) (.csv format would be ideal)
+    Static image capture of final arrangement (e.g., bmp, jpeg)
+
+Necessary configuration items:
+
+    Number of stimuli
+    List of stimuli or file paths for stimuli
+    For text stimuli, font size and character length (if needed)
+    For image stimuli, absolute dimensions (e.g., height and length in pixels)
+    Screen locations to randomly assign stimuli to
+        We can give absolute or relative X and  Y coordinates for each stimulus, or more ideally we would have a GUI configuration panel to drag-and-drop 'boxes' where stimuli should appear
+    Instructions for participant
+        We can load these as an image file created from a PowerPoint slide if that is easier than specifying text strings and formatting mark-up
+    File path to output data
+
+Long-term goals:
+
+    Able to configure task via GUI panel
+        In the meantime, specifying configuration settings via .csv file is just fine
+    Able to deploy task online, via email or survey platform such as Qualtrics
+        Requires storage or server for data and configuration storage, need to check on our hardware specs
+
+Other notes:
+
+    Doesn't matter which language this is written in as long as it is fully commented for later troubleshooting and modification
+    Ideally it would be Osx and PC compatible (though PC only is okay)
