@@ -1,0 +1,31 @@
+WORD,X,Y
+happiness,10,10
+soup,10,25
+orange juice,10,40
+cat,10,55
+sleep,10,70
+movie,10,85
+bed,30,10
+chair,30,25
+empathy,30,40
+banana,30,55
+plantain,30,70
+lamp,30,85
+dog,50,10
+snoopy,50,25
+peanuts,50,40
+elephants,50,55
+circus,50,70
+clown,50,85
+red,70,10
+stop,70,25
+go,70,40
+yellow,70,55
+octagon,70,70
+sidewalk,70,85
+trash can,90,10
+truck,90,25
+shoelace,90,40
+roller coaster,90,55
+platypus,90,70
+evil,90,85

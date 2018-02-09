@@ -1,6 +1,18 @@
 $(document).ready(function(){
 
-    document.getElementById('txtFileUpload').addEventListener('change',upload,false);
+    $('#txtFileUpload').change(function(evt){
+        processCSV(evt, function(data){
+                if (verifyConfig(data)) {
+                    // Config is valid, start the word association
+                    hideConfig();
+                    shuffleLocations(data);
+                    instantiateKonva(data);
+                } else {
+                    alert('No data to import!');
+                }
+        });
+    });
+
     /**
     * Method that checks that the browser supports the HTML5 File API
     *
@@ -18,8 +30,11 @@ $(document).ready(function(){
     * Method that reads and processes the selected file
     *
     * @param evt the upload Event from addEventListener
+    * @param callback a function(object) to be called once CSV is loaded.
+    *
+    * @return the processed data as an object
     */
-    function upload(evt) {
+    function processCSV(evt, callback) {
         if (!browserSupportFileUpload()) {
             alert('The File APIs are not fully supported in this browser!');
         } else {
@@ -29,14 +44,9 @@ $(document).ready(function(){
             reader.readAsText(file);
             reader.onload = function(event) {
                 var csvData = event.target.result;
-                data = $.csv.toArray(csvData);
-                if (verifyConfig(data)) {
-                    // Config is valid, start the word association
-                    hideConfig();
-                    instantiateKonva(data);
-                } else {
-                    alert('No data to import!');
-                }
+                var data = $.csv.toObjects(csvData);
+                // Send the data back to the callback
+                callback(data);
             };
             reader.onerror = function() {
                 alert('Unable to read ' + file.fileName);
@@ -45,9 +55,9 @@ $(document).ready(function(){
     }
     
     /**
-    * Check if the configuration csv is valid.
+    * Check if the configuration data is valid.
     *
-    * @param data the csv data after parsing. Should be array or object.
+    * @param data the data object after parsing. Should be array or object.
     *
     * @return whether or not it is valid.
     */
@@ -55,18 +65,31 @@ $(document).ready(function(){
         return data && data.length > 0;
     }
 
-
 });
 
-
+// Hide the config screen (csv upload etc.)
 function hideConfig(){
     $("#configScreen").hide();
+}
+
+// shuffle the xy coordinates among the words
+function shuffleLocations(words){
+    for (var i = words.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tempx = words[i].X;
+        var tempy = words[i].Y;
+        words[i].X = words[j].X;
+        words[i].Y = words[j].Y;
+        words[j].X = tempx;
+        words[j].Y = tempy;
+    }
+
 }
 
 /**
 * Sets up the Konva stage and adds in the Text objects
 *
-* @param words is an array of strings for the words to be displayed.
+* @param words is an array of {WORD,X,Y} objects to be displayed.
 */
 function instantiateKonva(words){
     // first we need to create a stage
@@ -90,7 +113,7 @@ function instantiateKonva(words){
 
     resizeStage();
     // adapt the stage on any window resize
-    window.addEventListener('resize', resizeStage());
+    $(window).resize(resizeStage);
 
     // then create layer
     var layer = new Konva.Layer();
@@ -98,13 +121,14 @@ function instantiateKonva(words){
     // Add the konva Text objects using words array
     konvaTexts = $.map(words, function(word) {
         // create our text
-        text = new Konva.Text({
-            x: Math.floor((Math.random() * stage.getWidth())+1),
-            y: Math.floor((Math.random() * stage.getHeight())+1),
-            text: word,
-            fontSize: 16
+        var text = new Konva.Text({
+            x: word.X/100*stage.width(),
+            y: word.Y/100*stage.height(),
+            text: word.WORD,
+            fontSize: 16,
+            draggable: true
         });
-        text.draggable('true');
+        text.transformsEnabled("position");
         return text;
     });
 

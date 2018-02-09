@@ -1,1 +1,31 @@
-happiness,soup,orange juice,cat,sleep,movie,bed,chair,empathy,banana,plantain,lamp,dog,snoopy,peanuts,elephants,circus,clown,red,stop,go,yellow,octagon,sidewalk,trash can,truck,shoelace,roller coaster,platypus,evil
+WORD,X,Y
+happiness,18,27
+soup,60,89
+orange juice,71,86
+cat,70,44
+sleep,64,36
+movie,15,68
+bed,52,35
+chair,75,26
+empathy,58,52
+banana,49,74
+plantain,93,17
+lamp,68,46
+dog,81,71
+snoopy,23,23
+peanuts,32,43
+elephants,82,41
+circus,6,26
+clown,28,35
+red,70,29
+stop,45,28
+go,16,80
+yellow,32,47
+octagon,50,21
+sidewalk,78,81
+trash can,33,56
+truck,58,73
+shoelace,86,37
+roller coaster,93,75
+platypus,32,92
+evil,44,7
