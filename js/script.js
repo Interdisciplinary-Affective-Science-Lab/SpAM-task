@@ -4,7 +4,7 @@ $(document).ready(function(){
         processCSV(evt, function(data){
                 if (verifyConfig(data)) {
                     // Config is valid, start the word association
-                    hideConfig();
+                    startAssociation();
                     shuffleLocations(data);
                     instantiateKonva(data);
                 } else {
@@ -68,8 +68,16 @@ $(document).ready(function(){
 });
 
 // Hide the config screen (csv upload etc.)
-function hideConfig(){
+// And show the konva canvas
+function startAssociation(){
     $("#configScreen").hide();
+    $("#associationScreen").show();
+}
+
+// Hide the association screen, show the done screen
+function showDoneScreen(){
+    $("#associationScreen").hide();
+    $("#doneScreen").show();
 }
 
 // shuffle the xy coordinates among the words
@@ -99,12 +107,13 @@ function instantiateKonva(words){
         height: 500
     });
 
+
     // Resize the stage with the webpage.
     function resizeStage() {
-        var container = document.querySelector('#container');
+        var container = $(window);
 
-        var containerWidth = container.offsetWidth;
-        var containerHeight = container.offsetHeight;
+        var containerWidth = container.width();
+        var containerHeight = container.height();
 
         stage.width(containerWidth);
         stage.height(containerHeight);
@@ -139,4 +148,27 @@ function instantiateKonva(words){
 
     // add the layer to the stage
     stage.add(layer);
+
+
+    // Listen to the Finish button
+    $("#doneButton").click(function(evt){
+        console.log("finish");
+
+        showDoneScreen();
+        // Add white background so that black text will show up.
+        var backg = new Konva.Rect({
+            width: stage.width(),
+            height: stage.height(),
+            x: 0,
+            y: 0,
+            fill: 'white'
+        })
+        layer.add(backg);
+        backg.moveToBottom();
+        layer.draw();
+
+        // let them download the data.
+        $("#screencap").attr("href",stage.toDataURL());
+        $("#pairwise").attr("href",
+    });
 }

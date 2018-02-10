@@ -5,6 +5,20 @@ html, body {
     overflow: hidden;
 }
 
+#associationScreen {
+    display: none;
+}
+
+#doneButton {
+    position: absolute;
+    left:0px;
+    top:0px;
+    z-index: 1;
+}
 #container {
     min-height: 100%;
+}
+
+#doneScreen {
+    display: none;
 }
