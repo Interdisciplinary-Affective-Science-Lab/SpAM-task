@@ -12,12 +12,15 @@
     
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Source+Serif+Pro" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!-- Using Konva.js Canvas library for drawing-->
     <script src="https://cdn.rawgit.com/konvajs/konva/1.7.6/konva.min.js" defer></script>
     <script src="js/jquery-3.3.1.min.js" defer></script>
     <script src="js/jquery.csv.min.js" defer></script>
     <script src="js/script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous" defer></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous" defer></script>
 
     <!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
@@ -26,16 +29,20 @@
 
 <body>
     <div id="configScreen" class="fileupload ">
-        <legend>Upload the configuration CSV</legend> <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+
+        <label class="btn btn-primary" for="txtFileUpload">
+            <input id="txtFileUpload" type="file" style="display:none" >
+            Upload the configuration CSV
+        </label>
     </div>
     <div id="associationScreen">
-        <button type="button" id="doneButton">Finish</button>
+        <button type="button" class="btn btn-primary" id="doneButton">Finish</button>
         <div id="container"></div>
     </div>
     <div id="doneScreen">
-        <div id="thankYou">
+        <h1 class="text-center mb-3"> 
             Thank you
-        </div>
-        <a id="screencap" download="screencap.png">screencap</a>
-        <a id="pairwise" download="pairwise.csv">pairwise data</a>
+        </h1>
+        <a class="btn btn-primary" role="button" id="screencap" download="screencap.png">screencap</a>
+        <a class="btn btn-primary" role="button" id="pairwise" download="pairwise.csv">pairwise data</a>
 </body>
