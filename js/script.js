@@ -1,4 +1,22 @@
 
+$('#defaultCSV').click(function(evt){
+    $.ajax({
+        url: "/csv/gridwords.csv",
+        success: function(csvData){
+            data = $.csv.toObjects(csvData);
+            if (verifyConfig(data)) {
+                // Config is valid, start the word association
+                startAssociation();
+                shuffleLocations(data);
+                instantiateKonva(data);
+            } else {
+                alert('No data to import!');
+            }
+        }
+    });
+});
+
+
 $('#txtFileUpload').change(function(evt){
     processCSV(evt, function(data){
             if (verifyConfig(data)) {
@@ -11,6 +29,7 @@ $('#txtFileUpload').change(function(evt){
             }
     });
 });
+
 
 /**
 * Method that checks that the browser supports the HTML5 File API
@@ -177,27 +196,56 @@ function instantiateKonva(words){
         showDoneScreen();
 
         pairwiseCSV = calculatePairwise(texts);
-        console.log(pairwiseCSV);
         // let them download the data.
         $("#screencap").attr("href",stage.toDataURL());
         $("#pairwise").attr("href","data:text/plain;charset=utf-8,"+encodeURIComponent(pairwiseCSV));
     });
 }
 
+/**
+* Gets the center X of a konva object.
+*
+* @param node a Konva Node.
+*
+* @return the absolute center X of the node.
+*/
 function centerX(node){
     return node.x()+node.width()/2;
 }
 
+/**
+* Gets the center Y of a konva object.
+*
+* @param node a Konva Node.
+*
+* @return the absolute center Y of the node.
+*/
 function centerY(node){
     return node.y()+node.height()/2;
 }
 
+
+/**
+* The absolute pythagorean distance between the centers of nodes.
+*
+* @param n1 Konva node
+* @param n2 second Konva node
+*
+* @return the absolute pythagorean distance.
+*/
 function dist(n1,n2){
     return Math.sqrt(
         ((centerX(n1)-centerX(n2))*(centerX(n1)-centerX(n2)))
         +((centerY(n1)-centerY(n2))*(centerY(n1)-centerY(n2))));
 }
 
+/**
+* Calculate the pairwise distance between all texts.
+*
+* @param texts an array of Konva Text objects
+*
+* @return the pairwise distances and words for all pairs, as a CSV string.
+*/
 function calculatePairwise(texts) {
     var data = "WORD1, WORD2, DIST";
     for(i = 0; i < texts.length-1; i++) {

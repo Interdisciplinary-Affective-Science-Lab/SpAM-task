@@ -30,19 +30,26 @@
 <body>
     <div id="configScreen" class="fileupload ">
 
-        <label class="btn btn-primary" for="txtFileUpload">
-            <input id="txtFileUpload" type="file" style="display:none" >
-            Upload the configuration CSV
-        </label>
+        <div class="btn-group" role="group">
+            <label class="btn btn-primary" for="txtFileUpload">
+                <input id="txtFileUpload" type="file" style="display:none" >
+                Upload configuration CSV
+            </label>
+            <label class="btn btn-secondary" id="defaultCSV">
+                Use default
+            </label>
+        </div>
     </div>
     <div id="associationScreen">
         <button type="button" class="btn btn-primary" id="doneButton">Finish</button>
         <div id="container"></div>
     </div>
     <div id="doneScreen">
-        <h1 class="text-center mb-3"> 
+        <h1 class="text-center mt-3 mb-3"> 
             Thank you
         </h1>
-        <a class="btn btn-primary" role="button" id="screencap" download="screencap.png">screencap</a>
-        <a class="btn btn-primary" role="button" id="pairwise" download="pairwise.csv">pairwise data</a>
+        <div class="text-center">
+            <a class="btn btn-primary" role="button" id="screencap" download="screencap.png">screencap</a>
+            <a class="btn btn-primary" role="button" id="pairwise" download="pairwise.csv">pairwise data</a>
+        </div>
 </body>
