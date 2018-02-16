@@ -1,7 +1,8 @@
 
 $('#defaultCSV').click(function(evt){
     $.ajax({
-        url: "/csv/gridwords.csv",
+        url: "csv/gridwords.csv",
+        type: 'get',
         success: function(csvData){
             data = $.csv.toObjects(csvData);
             if (verifyConfig(data)) {
