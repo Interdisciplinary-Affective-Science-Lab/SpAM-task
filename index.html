@@ -28,18 +28,43 @@
 </head>
 
 <body>
-    <div id="configScreen" class="fileupload ">
+    <div id="configScreen" class="h-100 flex-column align-items-center justify-content-center container-fluid">
 
-        <div class="btn-group" role="group">
-            <label class="btn btn-primary" for="txtFileUpload">
-                <input id="txtFileUpload" type="file" style="display:none" >
+        
+        <div>
+            <label class="btn btn-primary" for="configUpload">
+                <input id="configUpload" type="file" accept="text/csv" style="display:none" >
                 Upload configuration CSV
             </label>
-            <label class="btn btn-secondary" id="defaultCSV">
-                Use default
+            <label id="config-name">No config uploaded. Using default.</label>
+        </div>
+        <div>
+            <label class="btn btn-primary" for="instructionUpload">
+                <input id="instructionUpload" type="file" accept="text/csv" style="display:none" >
+                Upload instructions
+            </label>
+            <label id="instruction-name">No instruction uploaded. Using default.</label>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-success" id="startButton">
+                Start
             </label>
         </div>
     </div>
+    <div id="instructionScreen">
+        <div id="instructionsContainer">
+            <p class="activeInstruction">
+Words will appear on the screen. Drag and drop them to be close to one another.
+            </p>
+            <p>
+Drag similar words close together
+            </p>
+            <p>
+You will have as much time as you'd like. Click the done button to finish.
+            </p>
+        </div>
+        <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+     </div>
     <div id="associationScreen">
         <button type="button" class="btn btn-primary" id="doneButton">Finish</button>
         <div id="container"></div>

@@ -1,36 +1,73 @@
+var uploadedConfig = false;
 
-$('#defaultCSV').click(function(evt){
-    $.ajax({
-        url: "csv/gridwords.csv",
-        type: 'get',
-        success: function(csvData){
-            data = $.csv.toObjects(csvData);
-            if (verifyConfig(data)) {
-                // Config is valid, start the word association
-                startAssociation();
-                shuffleLocations(data);
-                instantiateKonva(data);
-            } else {
-                alert('No data to import!');
-            }
-        }
-    });
+$('#configUpload').change(function(evt){
+    $('#config-name').text(this.files[0].name);
+    processCSV(evt, onConfigReceive);
+    uploadedConfig = true;
 });
 
-
-$('#txtFileUpload').change(function(evt){
-    processCSV(evt, function(data){
-            if (verifyConfig(data)) {
-                // Config is valid, start the word association
-                startAssociation();
-                shuffleLocations(data);
-                instantiateKonva(data);
-            } else {
-                alert('No data to import!');
-            }
-    });
+$('#instructionUpload').change(function(e){
+    $('#instruction-name').text(this.files[0].name);
+    processCSV(e, onInstructionReceive);
 });
 
+$('#startButton').click(function(e){
+    startInstructions();
+
+    if(!uploadedConfig){
+        $.ajax({
+            url: "csv/gridwords.csv",
+            type: 'get',
+            success: function(csvData){
+                data = $.csv.toObjects(csvData);
+                onConfigReceive(data);
+            }
+        });
+    }
+});
+
+$('#nextButton').click(function(e){
+    var container = $('#instructionsContainer');
+    var active = container.find('.activeInstruction');
+    active.removeClass('activeInstruction');
+    if(active.next().length>0){
+        console.log(active.next());
+        active.next().addClass('activeInstruction');
+    } else {
+        startAssociation();
+    }
+});
+
+/**
+* Handle receiving the CSV data. 
+*
+* @param data the CSV data, as a javascript object.
+*
+*/
+function onConfigReceive(data) {
+    if (verifyConfig(data)) {
+        // Config is valid, start the word association
+        shuffleLocations(data);
+        instantiateKonva(data);
+    } else {
+        alert('No data to import!');
+    }
+}
+
+
+/**
+* Handle receiving the instuction data. 
+*
+* @param data the CSV data, as a javascript object.
+*
+*/
+function onInstructionReceive(data) {
+    if (verifyConfig(data)) {
+        setupInstructions(data);
+    } else {
+        alert('No data to import!');
+    }
+}
 
 /**
 * Method that checks that the browser supports the HTML5 File API
@@ -85,9 +122,16 @@ function verifyConfig(data){
 }
 
 // Hide the config screen (csv upload etc.)
+// And show the instructions
+function startInstructions(){
+    $("#configScreen").hide();
+    $("#instructionScreen").show();
+}
+
+// Hide the instructions
 // And show the konva canvas
 function startAssociation(){
-    $("#configScreen").hide();
+    $("#instructionScreen").hide();
     $("#associationScreen").show();
 }
 
@@ -115,6 +159,22 @@ function shuffleLocations(words){
         words[j].Y = tempy;
     }
 
+}
+
+
+/**
+* Set up the instructions screen. Putting in the instruction texts.
+*
+* @param instructions the text objects
+*/
+function setupInstructions(instructions){
+    var container = $('#instructionsContainer');
+    container.empty();
+    $(instructions).each(function(idx, text){
+        var s = $('<p>'+text.TEXT+'</p>');
+        container.append(s);
+    });
+    container.children().first().addClass("activeInstruction");
 }
 
 /**
