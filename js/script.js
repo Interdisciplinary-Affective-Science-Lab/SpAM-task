@@ -16,7 +16,6 @@ var participantId;
 $('#startButton').click(function(e){
     startInstructions();
     participantId = $('#participantId').val();
-    console.log(participantId);
 
     if(!uploadedConfig){
         $.ajax({
@@ -35,7 +34,6 @@ $('#nextButton').click(function(e){
     var active = container.find('.activeInstruction');
     active.removeClass('activeInstruction');
     if(active.next().length>0){
-        console.log(active.next());
         active.next().addClass('activeInstruction');
     } else {
         startAssociation();
@@ -228,6 +226,9 @@ function instantiateKonva(words){
     // then create layer for texts
     var layer = new Konva.Layer();
 
+    var dragGroup = new Konva.Group({
+        draggable: true
+    });
 
     // Keep track of Text objects for data collection
     var texts = [];
@@ -243,8 +244,30 @@ function instantiateKonva(words){
         });
         texts.push(text);
         text.transformsEnabled("position");
+        text.on('click', function() {
+            dragGroup.add(text);
+            text.fill('green');
+            text.draggable(false);
+        });
+        text.on('ungroup', function() {
+            text.fill('black');
+            text.draggable(true);
+        });
         return text;
     });
+    
+    // We also use the backlayer to detect clicks that don't go on any shapes
+    // If click, clear out the drag group.
+    backg.on('click', function(){
+        var children = dragGroup.getChildren();
+        $.each(children, function(idx, node){
+            console.log('stage clicked');
+            node.fire('ungroup');
+            layer.draw();
+        });
+    });
+
+    layer.add(dragGroup);
 
     $.each(konvaTexts,function(idx,textObject) {
         // add the texts to the layer
