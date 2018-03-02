@@ -261,8 +261,8 @@ function instantiateKonva(words){
     backg.on('click', function(){
         var children = dragGroup.getChildren();
         $.each(children, function(idx, node){
-            console.log('stage clicked');
             node.fire('ungroup');
+            dragGroup.removeChildren();
             layer.draw();
         });
     });
