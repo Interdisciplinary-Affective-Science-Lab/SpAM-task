@@ -245,6 +245,7 @@ function instantiateKonva(words){
         texts.push(text);
         text.transformsEnabled("position");
         text.on('click', function() {
+            text.remove();
             dragGroup.add(text);
             text.fill('green');
             text.draggable(false);
@@ -252,6 +253,8 @@ function instantiateKonva(words){
         text.on('ungroup', function() {
             text.fill('black');
             text.draggable(true);
+            text.x(text.x()+dragGroup.x());
+            text.y(text.y()+dragGroup.y());
         });
         return text;
     });
@@ -262,9 +265,14 @@ function instantiateKonva(words){
         var children = dragGroup.getChildren();
         $.each(children, function(idx, node){
             node.fire('ungroup');
-            dragGroup.removeChildren();
-            layer.draw();
         });
+        // Remove all children from drag group/ add them to layer.
+        while(dragGroup.hasChildren()){
+            layer.add(dragGroup.getChildren()[0])
+        }
+        dragGroup.x(0);
+        dragGroup.y(0);
+        layer.draw();
     });
 
     layer.add(dragGroup);
