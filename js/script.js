@@ -246,26 +246,38 @@ function instantiateKonva(words){
         text.transformsEnabled("position");
         text.on('click', function() {
             dragGroup.add(text);
+            text.x(text.x()-dragGroup.x());
+            text.y(text.y()-dragGroup.y());
             text.fill('green');
             text.draggable(false);
+            dragGroup.draw()
+            layer.draw();
         });
         text.on('ungroup', function() {
             text.fill('black');
             text.draggable(true);
+            text.x(text.x()+dragGroup.x());
+            text.y(text.y()+dragGroup.y());
         });
         return text;
     });
     
     // We also use the backlayer to detect clicks that don't go on any shapes
     // If click, clear out the drag group.
-    backg.on('click', function(){
+    backg.on('click', ungroup);
+    function ungroup() {
         var children = dragGroup.getChildren();
         $.each(children, function(idx, node){
             node.fire('ungroup');
-            dragGroup.removeChildren();
-            layer.draw();
         });
-    });
+        // Remove all children from drag group/ add them to layer.
+        while(dragGroup.hasChildren()){
+            layer.add(dragGroup.getChildren()[0])
+        }
+        dragGroup.x(0);
+        dragGroup.y(0);
+        layer.draw();
+    }
 
     layer.add(dragGroup);
 
@@ -280,6 +292,7 @@ function instantiateKonva(words){
 
     // Listen to the Finish button
     $("#doneButton").click(function(evt){
+        ungroup();
 
         showDoneScreen();
 
