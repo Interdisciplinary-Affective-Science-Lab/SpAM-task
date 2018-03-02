@@ -11,8 +11,12 @@ $('#instructionUpload').change(function(e){
     processCSV(e, onInstructionReceive);
 });
 
+var participantId;
+
 $('#startButton').click(function(e){
     startInstructions();
+    participantId = $('#participantId').val();
+    console.log(participantId);
 
     if(!uploadedConfig){
         $.ajax({
@@ -258,8 +262,12 @@ function instantiateKonva(words){
 
         pairwiseCSV = calculatePairwise(texts);
         // let them download the data.
-        $("#screencap").attr("href",stage.toDataURL());
-        $("#pairwise").attr("href","data:text/plain;charset=utf-8,"+encodeURIComponent(pairwiseCSV));
+        var scap = $("#screencap");
+        scap.attr("href",stage.toDataURL());
+        scap.attr("download",participantId+"_screencap.png");
+        var pairs = $("#pairwise");
+        pairs.attr("href","data:text/plain;charset=utf-8,"+encodeURIComponent(pairwiseCSV));
+        pairs.attr("download",participantId+"_pairwise.csv");
     });
 }
 
