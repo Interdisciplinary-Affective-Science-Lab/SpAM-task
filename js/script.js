@@ -346,6 +346,20 @@ function dist(n1,n2){
 }
 
 /**
+* Get the Pixels per Inch of the display.
+*
+* @return the PPI.
+*/
+function getDocumentPPI() {
+    var elem = document.createElement('div');
+    elem.style.width = '1in';
+    document.body.appendChild(elem);
+    var ppi = elem.offsetWidth;
+    document.body.removeChild(elem);
+    return ppi;
+}
+
+/**
 * Calculate the pairwise distance between all texts.
 *
 * @param texts an array of Konva Text objects
@@ -353,7 +367,10 @@ function dist(n1,n2){
 * @return the pairwise distances and words for all pairs, as a CSV string.
 */
 function calculatePairwise(texts) {
-    var data = "WORD1, WORD2, DIST";
+    var data = "WORD1, WORD2, DIST, SCREENWIDTH, SCREENHEIGHT, PIXELS/INCH";
+    var width = $(document).width();
+    var height = $(document).height();
+    var ppi = getDocumentPPI();
     for(i = 0; i < texts.length-1; i++) {
       for (k = i+1; k < texts.length; k++) {
           var obj1 = texts[i];
@@ -361,6 +378,11 @@ function calculatePairwise(texts) {
           data += '\n' + obj1.text()
               + ',' + obj2.text()
               + ',' + dist(obj1,obj2);
+          if(k==1){
+              data += ',' + width
+                  + ',' + height
+                  + ',' + ppi;
+          }
       }
     }
     return data;
