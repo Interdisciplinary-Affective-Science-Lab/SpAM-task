@@ -245,6 +245,7 @@ function instantiateKonva(words){
         texts.push(text);
         text.transformsEnabled("position");
         text.on('click', function() {
+            text.remove();
             dragGroup.add(text);
             text.x(text.x()-dragGroup.x());
             text.y(text.y()-dragGroup.y());
