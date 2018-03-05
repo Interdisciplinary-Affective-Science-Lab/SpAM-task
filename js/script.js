@@ -40,6 +40,17 @@ $('#nextButton').click(function(e){
     }
 });
 
+$('#prevButton').click(function(e){
+    var container = $('#instructionsContainer');
+    var active = container.find('.activeInstruction');
+    if(active.prev().length>0){
+        active.removeClass('activeInstruction');
+        active.prev().addClass('activeInstruction');
+    } else {
+        backToConfig();
+    }
+});
+
 /**
  * Handle receiving the CSV data. 
  *
@@ -128,6 +139,13 @@ function verifyConfig(data){
 function startInstructions(){
     $("#configScreen").hide();
     $("#instructionScreen").show();
+}
+
+// Hide the instructions screen 
+// And go back to config screen
+function backToConfig(){
+    $("#configScreen").show();
+    $("#instructionScreen").hide();
 }
 
 // Hide the instructions
