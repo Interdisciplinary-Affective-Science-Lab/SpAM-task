@@ -40,3 +40,16 @@ Other notes:
 
     Doesn't matter which language this is written in as long as it is fully commented for later troubleshooting and modification
     Ideally it would be Osx and PC compatible (though PC only is okay)
+
+
+
+
+3/2/18
+Fix the drag bug.
+Ungroup before calculating pairwise data!
+Make sure pairwise is accurate...
+Rectangular selection.
+Screen resolution info in the pairwise data file.
+lock zoom??
+
+
