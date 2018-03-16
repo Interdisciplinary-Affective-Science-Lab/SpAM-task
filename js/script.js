@@ -295,19 +295,15 @@ function instantiateKonva(words){
 
     backg.on('mouseup', function(e){ 
         selectRect.visible(false);
-        var numHit = 0;
+        ungroupAll();
         // Check for intersection to select texts
         $.each(texts, function(idx, t){
             if(hitCheck(t,selectRect)){
                 t.fire('group');
-                numHit++;
             } 
             // reenable text listening.
             t.listening(true);
         });
-        if(numHit == 0){
-            ungroupAll();
-        }
         drawing = false;
         layer.draw();
     });
@@ -393,13 +389,13 @@ function instantiateKonva(words){
 }
 
 /**
-* Check if two shapes intersect.
-*
-* @param shape1 a Konva shape (node).
-* @param shape2 a Konva shape (node).
-*
-* @return whether or not the two shapes intersect.
-*/
+ * Check if two shapes intersect.
+ *
+ * @param shape1 a Konva shape (node).
+ * @param shape2 a Konva shape (node).
+ *
+ * @return whether or not the two shapes intersect.
+ */
 function hitCheck(shape1, shape2){
     var s1 = shape1.getClientRect(); // use this to get bounding rect for shapes other than rectangles.
     var s2 = shape2.getClientRect();
