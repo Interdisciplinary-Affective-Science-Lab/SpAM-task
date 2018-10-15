@@ -1,5 +1,9 @@
 var uploadedConfig = false;
 
+$(window).on('load', function() {
+    tryRecoverData();
+});
+
 $('#configUpload').change(function(evt){
     $('#config-name').text(this.files[0].name);
     processCSV(evt, onConfigReceive);
@@ -36,6 +40,7 @@ $('#nextButton').click(function(e){
     if(active.next().length>0){
         active.next().addClass('activeInstruction');
     } else {
+        container.children(":first").addClass('activeInstruction');
         startAssociation();
     }
 });
@@ -50,6 +55,15 @@ $('#prevButton').click(function(e){
         backToConfig();
     }
 });
+
+$('#restart').click(function(e){
+    window.localStorage.removeItem("screencap");
+    window.localStorage.removeItem("csv");
+    window.localStorage.removeItem("id");
+    backToConfig();
+});
+
+
 
 /**
  * Handle receiving the CSV data. 
@@ -146,6 +160,8 @@ function startInstructions(){
 function backToConfig(){
     $("#configScreen").show();
     $("#instructionScreen").hide();
+    $("#associationScreen").hide();
+    $("#doneScreen").hide();
 }
 
 // Hide the instructions
@@ -157,8 +173,32 @@ function startAssociation(){
 
 // Hide the association screen, show the done screen
 function showDoneScreen(){
+    $("#configScreen").hide();
+    $("#instructionScreen").hide();
     $("#associationScreen").hide();
     $("#doneScreen").show();
+}
+
+function tryRecoverData(){
+    var storage = window.localStorage;
+    var screencap = storage.getItem("screencap");
+    var csv = storage.getItem("csv");
+    var id = storage.getItem("id");
+    if(screencap!==null && csv!==null && id!==null){
+        setDownloadData(screencap, csv, id);
+        showDoneScreen();
+    }
+}
+
+// Set the data for them to download
+function setDownloadData(screenCap, csv, id){
+    // let them download the data.
+    var scap = $("#screencap");
+    scap.attr("href",screenCap);
+    scap.attr("download",id+"_screencap.png");
+    var pairs = $("#pairwise");
+    pairs.attr("href","data:text/plain;charset=utf-8,"+encodeURIComponent(csv));
+    pairs.attr("download",id+"_pairwise.csv");
 }
 
 /**
@@ -377,14 +417,14 @@ function instantiateKonva(words){
 
         showDoneScreen();
 
-        pairwiseCSV = calculatePairwise(texts);
-        // let them download the data.
-        var scap = $("#screencap");
-        scap.attr("href",stage.toDataURL());
-        scap.attr("download",participantId+"_screencap.png");
-        var pairs = $("#pairwise");
-        pairs.attr("href","data:text/plain;charset=utf-8,"+encodeURIComponent(pairwiseCSV));
-        pairs.attr("download",participantId+"_pairwise.csv");
+        var screencap = stage.toDataURL();
+        var pairwiseCSV = calculatePairwise(texts);
+
+        // Cache the data in case they close the browser
+        window.localStorage.setItem('screencap',screencap);
+        window.localStorage.setItem('csv',pairwiseCSV);
+        window.localStorage.setItem('id',participantId);
+        setDownloadData(screencap,pairwiseCSV,participantId);
     });
 }
 
