@@ -1,4 +1,4 @@
-var uploadedConfig = false;
+var configData = false; // Config is false or the data.
 
 $(window).on('load', function() {
     tryRecoverData();
@@ -6,8 +6,9 @@ $(window).on('load', function() {
 
 $('#configUpload').change(function(evt){
     $('#config-name').text(this.files[0].name);
-    processCSV(evt, onConfigReceive);
-    uploadedConfig = true;
+    processCSV(evt, function(data){
+        configData = data;
+    });
 });
 
 $('#instructionUpload').change(function(e){
@@ -21,15 +22,17 @@ $('#startButton').click(function(e){
     startInstructions();
     participantId = $('#participantId').val();
 
-    if(!uploadedConfig){
+    if(!configData){
         $.ajax({
             url: "csv/gridwords.csv",
             type: 'get',
             success: function(csvData){
                 data = $.csv.toObjects(csvData);
-                onConfigReceive(data);
+                addConfigData(data);
             }
         });
+    } else {
+        addConfigData(configData);
     }
 });
 
@@ -71,7 +74,7 @@ $('#restart').click(function(e){
  * @param data the CSV data, as a javascript object.
  *
  */
-function onConfigReceive(data) {
+function addConfigData(data) {
     if (verifyConfig(data)) {
         // Config is valid, start the word association
         shuffleLocations(data);
@@ -313,18 +316,17 @@ function instantiateKonva(words){
         }
     }
     dragGroup.on('dragstart', function(e){
-      console.log('dragstart '+dragGroup.x());
-      dragGroup.dragOrigin = {x:dragGroup.x(), y:dragGroup.y()};
+        dragGroup.dragOrigin = {x:dragGroup.x(), y:dragGroup.y()};
     });
     dragGroup.on('dragmove', dragGroup.updateInBounds);
     dragGroup.on('dragend', function(e){
-      if(!dragGroup.inbounds){
-        dragGroup.x(dragGroup.dragOrigin.x);
-        dragGroup.y(dragGroup.dragOrigin.y);
-        dragGroup.updateInBounds();
-        dragGroup.draw();
-        layer.draw();
-      }
+        if(!dragGroup.inbounds){
+            dragGroup.x(dragGroup.dragOrigin.x);
+            dragGroup.y(dragGroup.dragOrigin.y);
+            dragGroup.updateInBounds();
+            dragGroup.draw();
+            layer.draw();
+        }
     });
         
     // We use the background to detect clicking to ungroup, as well as dragging for rectangular select.
@@ -413,7 +415,6 @@ function instantiateKonva(words){
             layer.draw();
         });
         text.on('ungroup', function() {
-          console.log(this);
             // Only ungroup if actually in group
             if(text.getParent() != dragGroup){
                 return;
