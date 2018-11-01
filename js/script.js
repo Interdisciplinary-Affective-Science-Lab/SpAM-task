@@ -292,8 +292,41 @@ function instantiateKonva(words){
 
     // Create a group to batch drag text objects
     var dragGroup = new Konva.Group({
-        draggable: true
+        draggable: true,
+        inbounds: true,
+        dragOrigin: {x:0,y:0}
     });
+    dragGroup.updateInBounds = function(e){
+        var bounds = dragGroup.getClientRect();
+        
+        if(0>bounds.x || bounds.x + bounds.width > stage.width() ||
+            0>bounds.y || bounds.y + bounds.height > stage.height()){
+            $.each(dragGroup.getChildren(), function(idx, child){
+                child.fire('outofbounds');
+                dragGroup.inbounds = false;
+            });
+        } else {
+            $.each(dragGroup.getChildren(), function(idx, child){
+                child.fire('inbounds');
+                dragGroup.inbounds = true;
+            });
+        }
+    }
+    dragGroup.on('dragstart', function(e){
+      console.log('dragstart '+dragGroup.x());
+      dragGroup.dragOrigin = {x:dragGroup.x(), y:dragGroup.y()};
+    });
+    dragGroup.on('dragmove', dragGroup.updateInBounds);
+    dragGroup.on('dragend', function(e){
+      if(!dragGroup.inbounds){
+        dragGroup.x(dragGroup.dragOrigin.x);
+        dragGroup.y(dragGroup.dragOrigin.y);
+        dragGroup.updateInBounds();
+        dragGroup.draw();
+        layer.draw();
+      }
+    });
+        
     // We use the background to detect clicking to ungroup, as well as dragging for rectangular select.
 
     // First we make a rectangle for the selection
@@ -380,6 +413,7 @@ function instantiateKonva(words){
             layer.draw();
         });
         text.on('ungroup', function() {
+          console.log(this);
             // Only ungroup if actually in group
             if(text.getParent() != dragGroup){
                 return;
@@ -389,6 +423,12 @@ function instantiateKonva(words){
             text.draggable(true);
             text.x(text.x()+dragGroup.x());
             text.y(text.y()+dragGroup.y());
+        });
+        text.on('outofbounds', function() {
+          text.fill('red');
+        });
+        text.on('inbounds', function() {
+          text.fill('green');
         });
         return text;
     });
@@ -542,7 +582,7 @@ function getDocumentPPI() {
  * @return the pairwise distances and words for all pairs, as a CSV string.
  */
 function calculatePairwise(texts) {
-    var data = "WORD1, WORD2, DIST, SCREENWIDTH, SCREENHEIGHT, PIXELS/INCH";
+    var data = "WORD1, WORD2, DIST, WORD1X, WORD1Y, SCREENWIDTH, SCREENHEIGHT, PIXELS/INCH";
     var width = $(document).width();
     var height = $(document).height();
     var ppi = getDocumentPPI();
@@ -552,7 +592,9 @@ function calculatePairwise(texts) {
             var obj2 = texts[k];
             data += '\n' + obj1.text()
                 + ',' + obj2.text()
-                + ',' + dist(obj1,obj2);
+                + ',' + dist(obj1,obj2)
+                + ',' + centerX(obj1)
+                + ',' + centerY(obj1);
             if(k==1){
                 data += ',' + width
                     + ',' + height
